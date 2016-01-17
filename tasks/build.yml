@@ -12,10 +12,11 @@
   user:
     comment: "{{ item.gecos | default(item.name) }}"
     createhome: "{{ item.createhome | default('yes') }}"
-    groups: "{{ item.groups | default(omit) | join(',') }}"
+    group: "{{ item.group | default(omit) }}"
+    groups: "{{ item.groups | default([ ]) | join(',') | default(omit) }}"
     name: "{{ item.name }}"
     shell: "{{ item.shell | default('/bin/bash') }}"
-    state: "{{ item.state | default('present') }}"
+    state: "{{ item.state | default(omit) }}"
   with_items: users_and_groups.users
 
 - name: Update home directory permissions
