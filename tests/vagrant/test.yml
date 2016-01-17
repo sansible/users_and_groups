@@ -19,6 +19,7 @@
           - name: dolor.ament
             groups:
               - ipsum
+          - name: no.extra.group
 
   post_tasks:
     - name: User lorem.ipsum should have public key added
