@@ -1,0 +1,46 @@
+---
+
+- name: Manage system groups
+  become: yes
+  group:
+    name: "{{ item.name }}"
+    system: "{{ item.system | default(omit) }}"
+  with_items: users_and_groups.groups
+
+- name: Manage systems users
+  become: yes
+  user:
+    comment: "{{ item.gecos | default(item.name) }}"
+    createhome: "{{ item.createhome | default('yes') }}"
+    groups: "{{ item.groups | default(omit) | join(',') }}"
+    name: "{{ item.name }}"
+    shell: "{{ item.shell | default('/bin/bash') }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: users_and_groups.users
+
+- name: Update home directory permissions
+  become: yes
+  file:
+    state: directory
+    path: "/home/{{ item.name }}"
+    mode: 0750
+  with_items: users_and_groups.users
+  when: not (item.createhome is defined and not item.createhome)
+
+- name: Create .ssh directory
+  become: yes
+  file:
+    path: /home/{{ item.name }}/.ssh
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    mode: 0700
+    state: directory
+  with_items: users_and_groups.users
+
+- name: Copy ssh auth keys
+  become: yes
+  authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ lookup('file', item.ssh_key) }}"
+  with_items: users_and_groups.users
+  when: item.ssh_key is defined

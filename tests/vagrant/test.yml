@@ -1,0 +1,29 @@
+---
+
+- name: Test GOCD Server
+  hosts: all
+
+  roles:
+    - name: ansible-city.users_and_groups
+      users_and_groups:
+        groups:
+          - name: lorem
+          - name: ipsum
+            system: yes
+        users:
+          - name: lorem.ipsum
+            groups:
+              - ipsum
+              - lorem
+            ssh_key: ./lorem.ipsum.pub
+          - name: dolor.ament
+            groups:
+              - ipsum
+
+  post_tasks:
+    - name: User lorem.ipsum should have public key added
+      become: yes
+      become_user: lorem.ipsum
+      shell: cat /home/lorem.ipsum/.ssh/authorized_keys | grep 'ssh-rsa AAAAB3NzaC1yc2E'
+      tags:
+        - assert

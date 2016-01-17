@@ -1,0 +1,7 @@
+---
+
+- name: install go server
+  include: build.yml
+  tags:
+    - build
+    - configure

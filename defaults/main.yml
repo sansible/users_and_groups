@@ -1,0 +1,17 @@
+---
+
+users_and_groups:
+  # Groups List
+  # groups:
+  #   - name: mygroup
+  #     system: yes
+  groups: [ ]
+
+  # Users List
+  # users:
+  #   - name: my.username
+  #     groups:
+  #       - wheel
+  #       - users
+  #
+  users: [ ]
