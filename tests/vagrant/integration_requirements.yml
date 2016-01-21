@@ -1,5 +1,4 @@
 ---
 
 - name: ansible-city.users_and_group
-  src: git+git@github.com:ansible-city/users_and_groups.git
-  version: origin/master
+  version: v1.0
