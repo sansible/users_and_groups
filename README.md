@@ -1,10 +1,10 @@
 # Users and Roles
 
-Master: ![Build Status](https://travis-ci.org/ansible-city/users_and_groups.svg?branch=master)  
-Develop: ![Build Status](https://travis-ci.org/ansible-city/users_and_groups.svg?branch=develop)
+Master: [![Build Status](https://travis-ci.org/ansible-city/users_and_groups.svg?branch=master)](https://travis-ci.org/ansible-city/users_and_groups)  
+Develop: [![Build Status](https://travis-ci.org/ansible-city/users_and_groups.svg?branch=develop)](https://travis-ci.org/ansible-city/users_and_groups)
 
 * [ansible.cfg](#ansible-cfg)
-* [Dependencies](#dependencies)
+* [Installation and Dependencies](#installation-and-dependencies)
 * [Tags](#tags)
 * [Examples](#examples)
 
@@ -26,9 +26,19 @@ hash_behaviour = merge
 
 
 
-## Dependencies
+## Installation and Dependencies
 
-This role haas no dependencies.
+This role has no dependencies.
+
+To install run `ansible-galaxy install ansible-city.users_and_groups` or add
+this to your `roles.yml`
+
+```YAML
+- name: ansible-city.users_and_groups
+  version: v1.0
+```
+
+and run `ansible-galaxy install -p ./roles -r roles.yml`
 
 
 
@@ -37,8 +47,8 @@ This role haas no dependencies.
 
 This role uses two tags: **build** and **configure**
 
-* `build` - Installs Go CD server and all it's dependencies.
-* `configure` - Configure and ensures that the service is running.
+* `build` & `configure` - Ensures that specified groups and users are
+  present.
 
 
 
