@@ -22,11 +22,11 @@
 - name: Update home directory permissions
   become: yes
   file:
-    state: directory
-    path: "/home/{{ item.name }}"
+    group: "{{ item.group | default(omit) }}"
     mode: 0750
-    group: "{{ item.name }}"
     owner: "{{ item.name }}"
+    path: "/home/{{ item.name }}"
+    state: directory
   with_items: users_and_groups.users
   when: not (item.createhome is defined and not item.createhome)
 
