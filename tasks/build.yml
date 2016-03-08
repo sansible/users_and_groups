@@ -47,3 +47,27 @@
     key: "{{ lookup('file', item.ssh_key) }}"
   with_items: users_and_groups.users
   when: item.ssh_key is defined
+
+- name: Ensure /etc/sudoers.d exists
+  become: yes
+  file:
+    path: /etc/sudoers.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0750
+
+- name: Enable include of /etc/sudoers.d
+  become: yes
+  lineinfile:
+    name: /etc/sudoers
+    regexp: "^#includedir"
+    line: "#includedir /etc/sudoers.d"
+    state: present
+
+- name: Create sudoers configure
+  become: yes
+  template:
+    src: sudoers.j2
+    dest: "/etc/sudoers.d/{{ item.name }}"
+  with_items: users_and_groups.sudoers

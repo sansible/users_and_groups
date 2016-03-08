@@ -21,14 +21,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 	# Test "build" tag
 	config.vm.provision "ansible" do |ansible|
-		ansible.playbook = "test.yml"
+		ansible.playbook = "../test.yml"
 		ansible.tags = [ "build" ]
 		ansible.verbose = "#{ENV['VERBOSE']}" if ENV['VERBOSE']
 	end
 
 	# Test "configure" tag
 	config.vm.provision "ansible" do |ansible|
-		ansible.playbook = "test.yml"
+		ansible.playbook = "../test.yml"
 		ansible.tags = [ "configure", "assert" ]
 		ansible.verbose = "#{ENV['VERBOSE']}" if ENV['VERBOSE']
 	end

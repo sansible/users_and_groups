@@ -1,7 +1,7 @@
 # Users and Roles
 
-Master: [![Build Status](https://travis-ci.org/ansible-city/users_and_groups.svg?branch=master)](https://travis-ci.org/ansible-city/users_and_groups)  
-Develop: [![Build Status](https://travis-ci.org/ansible-city/users_and_groups.svg?branch=develop)](https://travis-ci.org/ansible-city/users_and_groups)
+Master: [![Build Status](https://travis-ci.org/sansible/users_and_groups.svg?branch=master)](https://travis-ci.org/sansible/users_and_groups)  
+Develop: [![Build Status](https://travis-ci.org/sansible/users_and_groups.svg?branch=develop)](https://travis-ci.org/sansible/users_and_groups)
 
 * [ansible.cfg](#ansible-cfg)
 * [Installation and Dependencies](#installation-and-dependencies)
@@ -30,11 +30,11 @@ hash_behaviour = merge
 
 This role has no dependencies.
 
-To install run `ansible-galaxy install ansible-city.users_and_groups` or add
+To install run `ansible-galaxy install sansible.users_and_groups` or add
 this to your `roles.yml`
 
 ```YAML
-- name: ansible-city.users_and_groups
+- name: sansible.users_and_groups
   version: v1.0
 ```
 
@@ -58,11 +58,11 @@ This role uses two tags: **build** and **configure**
 Simple example for creating two users and two groups.
 
 ```YAML
-- name: Install GO CD Server
+- name: Configure User Access
   hosts: sandbox
 
   roles:
-    - name: ansible-city.users_and_groups
+    - name: sansible.users_and_groups
       users_and_groups:
         groups:
           - name: lorem
@@ -83,19 +83,47 @@ In most cases you would keep the list of users in external vars file or
 group|host vars file.
 
 ```YAML
-- name: Install GO CD Server
+- name: Configure User Access
   hosts: sandbox
 
   vars_files:
     - "vars/sandbox/users.yml"
 
   roles:
-    - name: ansible-city.users_and_groups
+    - name: sansible.users_and_groups
       users_and_groups:
         groups: "{{ base_image.os_groups }}"
         users: "{{ base_image.admins }}"
 
-    - name: ansible-city.users_and_groups
+    - name: sansible.users_and_groups
       users_and_groups:
         users: "{{ developers }}"
+```
+
+Add selected group to sudoers
+
+```YAML
+- name: Configure User Access
+  hosts: sandbox
+
+  vars_files:
+    - "vars/sandbox/users.yml"
+
+  roles:
+    - name: sansible.users_and_groups
+      users_and_groups:
+        groups: "{{ base_image.os_groups }}"
+        users: "{{ base_image.admins }}"
+
+    - name: sansible.users_and_groups
+      users_and_groups:
+        users: "{{ developers }}"
+
+    - name: sansible.users_and_groups
+      users_and_groups:
+        sudoers:
+          - name: wheel
+            user: "%wheel"
+            runas: "ALL=(ALL)"
+            commands: "NOPASSWD: ALL"
 ```
