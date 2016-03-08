@@ -1,11 +1,16 @@
 ---
 
-- name: Test GOCD Server
+- name: Test users_and_groups
   hosts: all
 
   roles:
-    - name: ansible-city.users_and_groups
+    - role: sansible.users_and_groups
       users_and_groups:
+        sudoers:
+          - name: ipsum
+            user: "%ipsum"
+            runas: "ALL=(ALL)"
+            commands: "NOPASSWD: ALL"
         groups:
           - name: lorem
           - name: ipsum
@@ -26,5 +31,11 @@
       become: yes
       become_user: lorem.ipsum
       shell: cat /home/lorem.ipsum/.ssh/authorized_keys | grep 'ssh-rsa AAAAB3NzaC1yc2E'
+      tags:
+        - assert
+
+    - name: Group ipsum added to sudoers
+      become: yes
+      shell: "cat /etc/sudoers.d/ipsum | grep -E 'ipsum\\s+ALL=\\(ALL\\)\\s+NOPASSWD: ALL'"
       tags:
         - assert

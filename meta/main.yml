@@ -6,7 +6,6 @@ dependencies: [ ]
 galaxy_info:
   author: Wojtek Oledzki
   description: Users and groups management made simple
-  company: Voytek Solutions LTD
   license: MIT
   min_ansible_version: 1.9
   platforms:
