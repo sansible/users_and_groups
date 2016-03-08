@@ -15,3 +15,11 @@ users_and_groups:
   #       - users
   #
   users: [ ]
+
+  # Sudoers
+  # sudoers:
+  #   - name: ipsum
+  #     user: "%ipsum"
+  #     runas: "ALL=(ALL)"
+  #     commands: "NOPASSWD: ALL"
+  sudoers: [ ]

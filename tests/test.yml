@@ -6,11 +6,6 @@
   roles:
     - role: sansible.users_and_groups
       users_and_groups:
-        sudoers:
-          - name: ipsum
-            user: "%ipsum"
-            runas: "ALL=(ALL)"
-            commands: "NOPASSWD: ALL"
         groups:
           - name: lorem
           - name: ipsum
@@ -25,6 +20,14 @@
             groups:
               - ipsum
           - name: no.extra.group
+
+    - role: sansible.users_and_groups
+      users_and_groups:
+        sudoers:
+          - name: ipsum
+            user: "%ipsum"
+            runas: "ALL=(ALL)"
+            commands: "NOPASSWD: ALL"
 
   post_tasks:
     - name: User lorem.ipsum should have public key added
