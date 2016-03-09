@@ -35,7 +35,7 @@
   file:
     path: /home/{{ item.name }}/.ssh
     owner: "{{ item.name }}"
-    group: "{{ item.name }}"
+    group: "{{ item.group | default(omit) }}"
     mode: 0700
     state: directory
   with_items: users_and_groups.users
