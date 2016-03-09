@@ -29,6 +29,21 @@
             runas: "ALL=(ALL)"
             commands: "NOPASSWD: ALL"
 
+    - role: sansible.users_and_groups
+      users_and_groups:
+        users:
+          - name: nemo.enim
+            ssh_key: ./lorem.ipsum.pub
+
+    - role: sansible.users_and_groups
+      users_and_groups:
+        groups:
+          - name: voluptatem
+        users:
+          - name: iste.natus
+            group: voluptatem
+            ssh_key: ./lorem.ipsum.pub
+
   post_tasks:
     - name: User lorem.ipsum should have public key added
       become: yes
