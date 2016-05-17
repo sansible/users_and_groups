@@ -45,10 +45,11 @@ and run `ansible-galaxy install -p ./roles -r roles.yml`
 
 ## Tags
 
-This role uses two tags: **build** and **configure**
+This role uses three tags: **build**, **configure** and **maintain**
 
 * `build` & `configure` - Ensures that specified groups and users are
   present.
+* maintain - Ensures users on an already built and configured instance
 
 
 
@@ -127,3 +128,72 @@ Add selected group to sudoers
             runas: "ALL=(ALL)"
             commands: "NOPASSWD: ALL"
 ```
+
+Use whitelist groups option to allow users contextually.
+
+Var file with users:
+
+```YAML
+---
+
+# vars/users.yml
+
+users_and_groups:
+  groups:
+    - name: admins
+    - name: developer_group_alpha
+    - name: developer_group_beta
+  users:
+    - name: admin.user
+      group: admins
+    - name: alpha.user
+      group: alpha_develops
+    - name: beta.user
+      group: developer_group_beta
+```
+
+In a base image:
+
+```YAML
+---
+
+# playbooks/base_image.yml
+
+- name: Base Image
+  hosts: "{{ hosts }}"
+
+  vars_files:
+    - vars/users.yml
+    
+  roles:
+    - role: sansible.users_and_groups
+      users_and_groups:
+        whitelist_groups:
+          - admins
+
+    - role: base_image
+```
+
+In a service role:
+
+```YAML
+---
+
+# playbooks/alpha_service.yml
+
+- name: Alpha Service
+  hosts: "{{ hosts }}"
+
+  vars_files:
+    - vars/users.yml
+    
+  roles:
+    - role: sansible.users_and_groups
+      users_and_groups:
+        whitelist_groups:
+          - admins
+          - developer_group_alpha
+
+    - role: alpha_service
+```
+

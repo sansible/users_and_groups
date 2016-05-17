@@ -23,3 +23,9 @@ users_and_groups:
   #     runas: "ALL=(ALL)"
   #     commands: "NOPASSWD: ALL"
   sudoers: [ ]
+
+  # Use this to only allow certain users contextually
+  # Note that groups will always be created, but users
+  # in groups will only be allowed if they belong to a
+  # group in this list
+  whitelist_groups: []
