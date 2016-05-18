@@ -44,6 +44,33 @@
             group: voluptatem
             ssh_key: ./lorem.ipsum.pub
 
+    # Check whitelist groups
+    - role: sansible.users_and_groups
+      users_and_groups:
+        groups:
+          - name: nonwhitelist
+          - name: whitelist
+        users:
+          # user not in whitelist with group set
+          - name: nonwhitelistgroup.user
+            group: nonwhitelist
+          # user not in whitelist with groups set
+          - name: nonwhitelistgroups.user
+            groups:
+              - nonwhitelist
+          # user in whitelist with group set
+          - name: whitelistedgroup.user
+            group: whitelist
+            ssh_key: ./lorem.ipsum.pub
+          # user in whitelist with groups set
+          - name: whitelistedgroups.user
+            groups:
+              - nonwhitelist
+              - whitelist
+            ssh_key: ./lorem.ipsum.pub
+        whitelist_groups:
+          - whitelist
+
   post_tasks:
     - name: User lorem.ipsum should have public key added
       become: yes
@@ -55,5 +82,51 @@
     - name: Group ipsum added to sudoers
       become: yes
       shell: "cat /etc/sudoers.d/ipsum | grep -E 'ipsum\\s+ALL=\\(ALL\\)\\s+NOPASSWD: ALL'"
+      tags:
+        - assert
+
+    - name: nonwhitelistgroup.user should not exist
+      become: yes
+      shell: "id -u nonwhitelistgroup.user"
+      register: user_check_result
+      failed_when: "user_check_result.rc == 0"
+      tags:
+        - assert
+
+    - name: nonwhitelistgroups.user should not exist
+      become: yes
+      shell: "id -u nonwhitelistgroups.user"
+      register: user_check_result
+      failed_when: "user_check_result.rc == 0"
+      tags:
+        - assert
+
+    - name: whitelistedgroup.user should exist
+      become: yes
+      shell: "id -u whitelistedgroup.user"
+      register: user_check_result
+      failed_when: "user_check_result.rc != 0"
+      tags:
+        - assert
+
+    - name: User whitelistedgroup.user should have public key added
+      become: yes
+      become_user: whitelistedgroup.user
+      shell: cat /home/whitelistedgroup.user/.ssh/authorized_keys | grep 'ssh-rsa AAAAB3NzaC1yc2E'
+      tags:
+        - assert
+
+    - name: whitelistedgroups.user should exist
+      become: yes
+      shell: "id -u whitelistedgroups.user"
+      register: user_check_result
+      failed_when: "user_check_result.rc != 0"
+      tags:
+        - assert
+
+    - name: User whitelistedgroups.user should have public key added
+      become: yes
+      become_user: whitelistedgroups.user
+      shell: cat /home/whitelistedgroups.user/.ssh/authorized_keys | grep 'ssh-rsa AAAAB3NzaC1yc2E'
       tags:
         - assert
