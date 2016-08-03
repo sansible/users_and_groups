@@ -5,65 +5,7 @@
   group:
     name: "{{ item.name }}"
     system: "{{ item.system | default(omit) }}"
-  with_items: users_and_groups.groups
-
-- name: Manage systems users
-  become: yes
-  user:
-    comment: "{{ item.gecos | default(item.name) }}"
-    createhome: "{{ item.createhome | default('yes') }}"
-    group: "{{ item.group | default(omit) }}"
-    groups: "{{ item.groups | default([ ]) | join(',') | default(omit) }}"
-    name: "{{ item.name }}"
-    password: "{{ item.password | default(omit) }}"
-    shell: "{{ item.shell | default('/bin/bash') }}"
-    state: "{{ item.state | default(omit) }}"
-  with_items: users_and_groups.users
-  when: (not users_and_groups.whitelist_groups) 
-    or ( item.groups is defined and ( item.groups | intersect(users_and_groups.whitelist_groups ))) 
-    or ( item.group is defined and item.group in users_and_groups.whitelist_groups) 
-
-- name: Update home directory permissions
-  become: yes
-  file:
-    group: "{{ item.group | default(omit) }}"
-    mode: 0750
-    owner: "{{ item.name }}"
-    path: "/home/{{ item.name }}"
-    state: directory
-  with_items: users_and_groups.users
-  when: (item.createhome is not defined or item.createhome) 
-    and (
-      (not users_and_groups.whitelist_groups) 
-      or ( item.groups is defined and ( item.groups | intersect(users_and_groups.whitelist_groups ))) 
-      or ( item.group is defined and item.group in users_and_groups.whitelist_groups)
-    )
-
-- name: Create .ssh directory
-  become: yes
-  file:
-    path: /home/{{ item.name }}/.ssh
-    owner: "{{ item.name }}"
-    group: "{{ item.group | default(omit) }}"
-    mode: 0700
-    state: directory
-  with_items: users_and_groups.users
-  when: (not users_and_groups.whitelist_groups) 
-    or ( item.groups is defined and ( item.groups | intersect(users_and_groups.whitelist_groups ))) 
-    or ( item.group is defined and item.group in users_and_groups.whitelist_groups) 
-
-- name: Copy ssh auth keys
-  become: yes
-  authorized_key:
-    user: "{{ item.name }}"
-    key: "{{ lookup('file', item.ssh_key) }}"
-  with_items: users_and_groups.users
-  when: (item.ssh_key is defined) 
-    and (
-      (not users_and_groups.whitelist_groups) 
-      or ( item.groups is defined and ( item.groups | intersect(users_and_groups.whitelist_groups ))) 
-      or ( item.group is defined and item.group in users_and_groups.whitelist_groups)
-    )
+  with_items: "{{ users_and_groups.groups }}"
 
 - name: Ensure /etc/sudoers.d exists
   become: yes
@@ -87,4 +29,65 @@
   template:
     src: sudoers.j2
     dest: "/etc/sudoers.d/{{ item.name }}"
-  with_items: users_and_groups.sudoers
+  with_items: "{{ users_and_groups.sudoers }}"
+
+- name: Manage systems users
+  become: yes
+  user:
+    comment: "{{ item.gecos | default(item.name) }}"
+    createhome: "{{ item.createhome | default('yes') }}"
+    group: "{{ item.group | default(omit) }}"
+    groups: "{{ item.groups | default([ ]) | join(',') | default(omit) }}"
+    name: "{{ item.name }}"
+    password: "{{ item.password | default(omit) }}"
+    shell: "{{ item.shell | default('/bin/bash') }}"
+    state: "{{ item.state | default(omit) }}"
+  with_items: "{{ users_and_groups.users }}"
+  when: (not users_and_groups.whitelist_groups)
+    or ( item.groups is defined and ( item.groups | intersect(users_and_groups.whitelist_groups )))
+    or ( item.group is defined and item.group in users_and_groups.whitelist_groups)
+
+- name: Update home directory permissions
+  become: yes
+  file:
+    group: "{{ item.group | default(omit) }}"
+    mode: 0750
+    owner: "{{ item.name }}"
+    path: "/home/{{ item.name }}"
+    state: directory
+  with_items: "{{ users_and_groups.users }}"
+  when: (item.state is not defined or item.state != absent)
+    and (item.createhome is not defined or item.createhome)
+    and (
+      (not users_and_groups.whitelist_groups)
+      or ( item.groups is defined and ( item.groups | intersect(users_and_groups.whitelist_groups )))
+      or ( item.group is defined and item.group in users_and_groups.whitelist_groups)
+    )
+
+- name: Create .ssh directory
+  become: yes
+  file:
+    path: /home/{{ item.name }}/.ssh
+    owner: "{{ item.name }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: 0700
+    state: directory
+  with_items: "{{ users_and_groups.users }}"
+  when:  (item.state is not defined or item.state != absent)
+    and (not users_and_groups.whitelist_groups)
+    or ( item.groups is defined and ( item.groups | intersect(users_and_groups.whitelist_groups )))
+    or ( item.group is defined and item.group in users_and_groups.whitelist_groups)
+
+- name: Copy ssh auth keys
+  become: yes
+  authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ lookup('file', item.ssh_key) }}"
+  with_items: "{{ users_and_groups.users }}"
+  when:  (item.state is not defined or item.state != absent)
+    and (item.ssh_key is defined)
+    and (
+      (not users_and_groups.whitelist_groups)
+      or ( item.groups is defined and ( item.groups | intersect(users_and_groups.whitelist_groups )))
+      or ( item.group is defined and item.group in users_and_groups.whitelist_groups)
+    )
