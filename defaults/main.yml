@@ -32,3 +32,11 @@ users_and_groups:
   # in groups will only be allowed if they belong to a
   # group in this list
   whitelist_groups: []
+
+  # Directory where authorized SSH public keys are
+  # looked for, e.g., /etc/ssh/authorized_keys.
+  # Key files must be owned by the corresponding user
+  # and only accessible to them.
+  # Defaults to $HOME/.ssh, in which case the key file
+  # will be named authorized_keys.
+  authorized_keys_dir: ~

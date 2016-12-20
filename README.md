@@ -1,6 +1,6 @@
 # Users and Roles
 
-Master: [![Build Status](https://travis-ci.org/sansible/users_and_groups.svg?branch=master)](https://travis-ci.org/sansible/users_and_groups)  
+Master: [![Build Status](https://travis-ci.org/sansible/users_and_groups.svg?branch=master)](https://travis-ci.org/sansible/users_and_groups)
 Develop: [![Build Status](https://travis-ci.org/sansible/users_and_groups.svg?branch=develop)](https://travis-ci.org/sansible/users_and_groups)
 
 * [ansible.cfg](#ansible-cfg)
@@ -78,6 +78,24 @@ Simple example for creating two users and two groups.
           - name: dolor.ament
             groups:
               - ipsum
+```
+
+Creating a jailed SFTP user (cf [here](https://wiki.archlinux.org/index.php/SFTP_chroot) for a step-by-step guide):
+
+```YAML
+- name: Configure User Access
+  hosts: sandbox
+
+  roles:
+    - name: sansible.users_and_groups
+      users_and_groups:
+        authorized_keys_dir: /etc/ssh/authorized_keys
+        groups:
+          - name: sftp_only
+        users:
+          - name: sftp
+            group: sftp_only
+            home: /mnt/sftp_vol
 ```
 
 In most cases you would keep the list of users in external vars file or
@@ -164,7 +182,7 @@ In a base image:
 
   vars_files:
     - vars/users.yml
-    
+
   roles:
     - role: sansible.users_and_groups
       users_and_groups:
@@ -186,7 +204,7 @@ In a service role:
 
   vars_files:
     - vars/users.yml
-    
+
   roles:
     - role: sansible.users_and_groups
       users_and_groups:
