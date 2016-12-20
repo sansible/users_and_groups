@@ -36,6 +36,7 @@
   user:
     comment: "{{ item.gecos | default(item.name) }}"
     createhome: "{{ item.createhome | default('yes') }}"
+    home: "{{ item.home | default('/home/' ~ item.name) }}"
     group: "{{ item.group | default(omit) }}"
     groups: "{{ item.groups | default([ ]) | join(',') | default(omit) }}"
     name: "{{ item.name }}"
@@ -53,7 +54,7 @@
     group: "{{ item.group | default(omit) }}"
     mode: 0750
     owner: "{{ item.name }}"
-    path: "/home/{{ item.name }}"
+    path: "{{ item.home | default('/home/' ~ item.name) }}"
     state: directory
   with_items: "{{ users_and_groups.users }}"
   when: (item.state is not defined or item.state != absent)
@@ -67,7 +68,7 @@
 - name: Create .ssh directory
   become: yes
   file:
-    path: /home/{{ item.name }}/.ssh
+    path: "{{ item.home | default('/home/' ~ item.name) }}/.ssh"
     owner: "{{ item.name }}"
     group: "{{ item.group | default(omit) }}"
     mode: 0700
