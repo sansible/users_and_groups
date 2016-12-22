@@ -45,6 +45,16 @@
             home: /penates
             ssh_key: ./lorem.ipsum.pub
 
+    - role: sansible.users_and_groups
+      users_and_groups:
+        authorized_keys_dir: /etc/ssh/authorized_keys
+        groups:
+          - name: voluptatem
+        users:
+          - name: adipiscing.elit
+            group: voluptatem
+            ssh_key: ./lorem.ipsum.pub
+
     # Check whitelist groups
     - role: sansible.users_and_groups
       users_and_groups:
@@ -84,6 +94,13 @@
       become: yes
       become_user: iste.natus
       command: grep 'ssh-rsa AAAAB3NzaC1yc2E' /penates/.ssh/authorized_keys
+      tags:
+        - assert
+
+    - name: User adipiscing.elit should have public key added to key dir
+      become: yes
+      become_user: adipiscing.elit
+      command: grep 'ssh-rsa AAAAB3NzaC1yc2E' /etc/ssh/authorized_keys/adipiscing.elit
       tags:
         - assert
 
