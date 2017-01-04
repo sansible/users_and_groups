@@ -13,6 +13,7 @@ users_and_groups:
   #     groups:
   #       - wheel
   #       - users
+  #     system: yes
   #
   users: [ ]
 
