@@ -3,6 +3,7 @@
 - name: Manage system groups
   become: yes
   group:
+    gid: "{{ item.gid | default(omit) }}"
     name: "{{ item.name }}"
     system: "{{ item.system | default(omit) }}"
   with_items: "{{ users_and_groups.groups }}"
@@ -43,6 +44,7 @@
     shell: "{{ item.shell | default('/bin/bash') }}"
     state: "{{ item.state | default(omit) }}"
     system: "{{ item.system | default(omit) }}"
+    uid: "{{ item.uid | default(omit) }}"
   with_items: "{{ users_and_groups.users }}"
   when: (not users_and_groups.whitelist_groups)
     or ( item.groups is defined and ( item.groups | intersect(users_and_groups.whitelist_groups )))

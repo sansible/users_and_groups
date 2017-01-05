@@ -3,8 +3,9 @@
 users_and_groups:
   # Groups List
   # groups:
-  #   - name: mygroup
-  #     system: yes
+  #   - gid: YYY
+  #     name: mygroup
+  #     system: yes/no
   groups: [ ]
 
   # Users List
@@ -13,7 +14,8 @@ users_and_groups:
   #     groups:
   #       - wheel
   #       - users
-  #     system: yes
+  #     system: yes/no
+  #     uid: YYY
   #
   users: [ ]
 
