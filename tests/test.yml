@@ -176,4 +176,3 @@
       failed_when: user_check_result.stdout != "666"
       tags:
         - assert
-
