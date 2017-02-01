@@ -47,6 +47,17 @@
         users:
           - name: iste.natus
             group: voluptatem
+            home: /penates
+            ssh_key: ./lorem.ipsum.pub
+
+    - role: sansible.users_and_groups
+      users_and_groups:
+        authorized_keys_dir: /etc/ssh/authorized_keys
+        groups:
+          - name: voluptatem
+        users:
+          - name: adipiscing.elit
+            group: voluptatem
             ssh_key: ./lorem.ipsum.pub
 
     # Check whitelist groups
@@ -80,19 +91,33 @@
     - name: User lorem.ipsum should have public key added
       become: yes
       become_user: lorem.ipsum
-      shell: cat /home/lorem.ipsum/.ssh/authorized_keys | grep 'ssh-rsa AAAAB3NzaC1yc2E'
+      command: grep 'ssh-rsa AAAAB3NzaC1yc2E' /home/lorem.ipsum/.ssh/authorized_keys
+      tags:
+        - assert
+
+    - name: User iste.natus should have specified home dir with public key added
+      become: yes
+      become_user: iste.natus
+      command: grep 'ssh-rsa AAAAB3NzaC1yc2E' /penates/.ssh/authorized_keys
+      tags:
+        - assert
+
+    - name: User adipiscing.elit should have public key added to key dir
+      become: yes
+      become_user: adipiscing.elit
+      command: grep 'ssh-rsa AAAAB3NzaC1yc2E' /etc/ssh/authorized_keys/adipiscing.elit
       tags:
         - assert
 
     - name: Group ipsum added to sudoers
       become: yes
-      shell: "cat /etc/sudoers.d/ipsum | grep -E 'ipsum\\s+ALL=\\(ALL\\)\\s+NOPASSWD: ALL'"
+      command: "grep -E 'ipsum\\s+ALL=\\(ALL\\)\\s+NOPASSWD: ALL' /etc/sudoers.d/ipsum"
       tags:
         - assert
 
     - name: nonwhitelistgroup.user should not exist
       become: yes
-      shell: "id -u nonwhitelistgroup.user"
+      command: id -u nonwhitelistgroup.user
       register: user_check_result
       failed_when: "user_check_result.rc == 0"
       tags:
@@ -100,7 +125,7 @@
 
     - name: nonwhitelistgroups.user should not exist
       become: yes
-      shell: "id -u nonwhitelistgroups.user"
+      command: id -u nonwhitelistgroups.user
       register: user_check_result
       failed_when: "user_check_result.rc == 0"
       tags:
@@ -108,7 +133,7 @@
 
     - name: whitelistedgroup.user should exist
       become: yes
-      shell: "id -u whitelistedgroup.user"
+      command: id -u whitelistedgroup.user
       register: user_check_result
       failed_when: "user_check_result.rc != 0"
       tags:
@@ -117,13 +142,13 @@
     - name: User whitelistedgroup.user should have public key added
       become: yes
       become_user: whitelistedgroup.user
-      shell: cat /home/whitelistedgroup.user/.ssh/authorized_keys | grep 'ssh-rsa AAAAB3NzaC1yc2E'
+      command: grep 'ssh-rsa AAAAB3NzaC1yc2E' /home/whitelistedgroup.user/.ssh/authorized_keys
       tags:
         - assert
 
     - name: whitelistedgroups.user should exist
       become: yes
-      shell: "id -u whitelistedgroups.user"
+      command: id -u whitelistedgroups.user
       register: user_check_result
       failed_when: "user_check_result.rc != 0"
       tags:
@@ -132,13 +157,13 @@
     - name: User whitelistedgroups.user should have public key added
       become: yes
       become_user: whitelistedgroups.user
-      shell: cat /home/whitelistedgroups.user/.ssh/authorized_keys | grep 'ssh-rsa AAAAB3NzaC1yc2E'
+      command: grep 'ssh-rsa AAAAB3NzaC1yc2E' /home/whitelistedgroups.user/.ssh/authorized_keys
       tags:
         - assert
 
     - name: lucifer should have uid 666
       become: yes
-      shell: "id -u lucifer"
+      command: id -u lucifer
       register: user_check_result
       failed_when: user_check_result.stdout != "666"
       tags:
@@ -146,7 +171,7 @@
 
     - name: lucifer should have gid 666
       become: yes
-      shell: "id -g lucifer"
+      command: id -g lucifer
       register: user_check_result
       failed_when: user_check_result.stdout != "666"
       tags:
