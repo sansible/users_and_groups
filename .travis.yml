@@ -43,6 +43,9 @@ script:
     | grep -q 'changed=0.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
+  # Test the "assert" stage
+  - ansible-playbook -i inventory test.yml --tags=assert --connection=local
+  - ansible-playbook -i inventory test_userdel.yml --tags=assert --connection=local
     
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

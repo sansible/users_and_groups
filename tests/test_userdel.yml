@@ -1,0 +1,23 @@
+---
+# Separated out to avoid idempotency warnings
+
+- name: Test users_and_groups user deletion
+  hosts: all
+
+  roles:
+    - role: sansible.users_and_groups
+      users_and_groups:
+        users:
+          - name: lorum.ipsum
+            state: absent
+      tags:
+        - assert
+
+  post_tasks:
+    - name: lorum.ipsum should not exist
+      become: yes
+      command: id -u lorum.ipsum
+      register: user_check_result
+      failed_when: "user_check_result.rc == 0"
+      tags:
+        - assert
