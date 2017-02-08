@@ -87,6 +87,15 @@
         whitelist_groups:
           - whitelist
 
+    # Test .ssh directory creation for user without any keys
+    - role: sansible.users_and_groups
+      users_and_groups:
+        groups:
+          - name: ssh.dir.test
+        users:
+          - name: ssh.dir.test
+            group: ssh.dir.test
+
   post_tasks:
     - name: User lorem.ipsum should have public key added
       become: yes
@@ -174,5 +183,15 @@
       command: id -g lucifer
       register: user_check_result
       failed_when: user_check_result.stdout != "666"
+      tags:
+        - assert
+
+    - name: ssh.dir.test should have .ssh directory
+      become: yes
+      stat:
+        path: /home/ssh.dir.test/.ssh
+      register: ssh_dir_check
+      failed_when: ssh_dir_check.stat.isdir is not defined
+        or not ssh_dir_check.stat.isdir
       tags:
         - assert
