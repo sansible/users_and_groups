@@ -61,7 +61,7 @@
     path: "{{ item.home | default('/home/' ~ item.name) }}"
     state: directory
   with_items: "{{ users_and_groups.users }}"
-  when: (item.state is not defined or item.state != absent)
+  when: (item.state is not defined or item.state != "absent")
     and (item.createhome is not defined or item.createhome)
     and (
       (not users_and_groups.whitelist_groups)
@@ -79,7 +79,7 @@
     state: directory
   with_items: "{{ users_and_groups.users }}"
   when: (users_and_groups.authorized_keys_dir is none)
-    and (item.state is not defined or item.state != absent)
+    and (item.state is not defined or item.state != "absent")
     and (
       (not users_and_groups.whitelist_groups)
       or ( item.groups is defined and ( item.groups | intersect(users_and_groups.whitelist_groups )))
@@ -94,7 +94,7 @@
     manage_dir: yes
   with_items: "{{ users_and_groups.users }}"
   when: (users_and_groups.authorized_keys_dir is none)
-    and (item.state is not defined or item.state != absent)
+    and (item.state is not defined or item.state != "absent")
     and (item.ssh_key is defined)
     and (
       (not users_and_groups.whitelist_groups)
@@ -121,7 +121,7 @@
     manage_dir: no
   with_items: "{{ users_and_groups.users }}"
   when: (users_and_groups.authorized_keys_dir is not none)
-    and (item.state is not defined or item.state != absent)
+    and (item.state is not defined or item.state != "absent")
     and (item.ssh_key is defined)
     and (
       (not users_and_groups.whitelist_groups)
