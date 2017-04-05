@@ -4,5 +4,4 @@
   include: build.yml
   tags:
     - build
-    - configure
     - maintain
