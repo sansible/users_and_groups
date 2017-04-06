@@ -36,13 +36,6 @@ script:
     | grep -q 'changed=0.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
-  # Test the "configure" stage
-  - ansible-playbook -i inventory test.yml --tags=configure --connection=local
-  - >
-    ansible-playbook -i inventory test.yml --tags=configure --connection=local
-    | grep -q 'changed=0.*failed=0'
-    && (echo 'Idempotence test: pass' && exit 0)
-    || (echo 'Idempotence test: fail' && exit 1)
   # Test the "assert" stage
   - ansible-playbook -i inventory test.yml --tags=assert --connection=local
   - ansible-playbook -i inventory test_userdel.yml --tags=assert --connection=local

@@ -45,11 +45,11 @@ and run `ansible-galaxy install -p ./roles -r roles.yml`
 
 ## Tags
 
-This role uses three tags: **build**, **configure** and **maintain**
+This role uses two tags: **build** and **maintain**
 
-* `build` & `configure` - Ensures that specified groups and users are
+* `build` - Ensures that specified groups and users are
   present.
-* maintain - Ensures users on an already built and configured instance
+* `maintain` - Ensures users on an already built and configured instance
 
 
 
