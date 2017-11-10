@@ -214,4 +214,3 @@ In a service role:
 
     - role: alpha_service
 ```
-
