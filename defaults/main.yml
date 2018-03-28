@@ -1,42 +1,30 @@
 ---
 
-users_and_groups:
-  # Groups List
-  # groups:
-  #   - gid: YYY
-  #     name: mygroup
-  #     system: yes/no
-  groups: [ ]
+sansible_users_and_groups_authorized_keys_dir: ~
+# Directory in which authorized SSH public keys are to be found, e. g.
+# /etc/ssh/authorized_keys.
+# Files must be owned by the corresponding user and only accessible by them.
+# Defaults to $HOME/.ssh, in which case the key file will be named
+# authorized_keys.
 
-  # Users List
-  # users:
-  #   - name: my.username
-  #     groups:
-  #       - wheel
-  #       - users
-  #     system: yes/no
-  #     uid: YYY
-  #
-  users: [ ]
+sansible_users_and_groups_groups: []
+#   - gid: YYY
+#     name: mygroup
+#     system: yes/no
 
-  # Sudoers
-  # sudoers:
-  #   - name: ipsum
-  #     user: "%ipsum"
-  #     runas: "ALL=(ALL)"
-  #     commands: "NOPASSWD: ALL"
-  sudoers: [ ]
+sansible_users_and_groups_sudoers: []
+#   - name: ipsum
+#     user: "%ipsum"
+#     runas: "ALL=(ALL)"
+#     commands: "NOPASSWD: ALL"
 
-  # Use this to only allow certain users contextually
-  # Note that groups will always be created, but users
-  # in groups will only be allowed if they belong to a
-  # group in this list
-  whitelist_groups: []
+sansible_users_and_groups_users: []
+#   - name: my.username
+#     groups:
+#       - wheel
+#       - users
+#     system: yes/no
+#     uid: YYY
 
-  # Directory where authorized SSH public keys are
-  # looked for, e.g., /etc/ssh/authorized_keys.
-  # Key files must be owned by the corresponding user
-  # and only accessible to them.
-  # Defaults to $HOME/.ssh, in which case the key file
-  # will be named authorized_keys.
-  authorized_keys_dir: ~
+sansible_users_and_groups_whitelist_groups: []
+# If defined, only users in these groups will be created.
