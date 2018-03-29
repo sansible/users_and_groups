@@ -11,21 +11,6 @@ Develop: [![Build Status](https://travis-ci.org/sansible/users_and_groups.svg?br
 This roles manages OS users and groups.
 
 
-
-
-## ansible.cfg
-
-This role is designed to work with merge "hash_behaviour". Make sure your
-ansible.cfg contains these settings
-
-```INI
-[defaults]
-hash_behaviour = merge
-```
-
-
-
-
 ## Installation and Dependencies
 
 This role has no dependencies.
@@ -35,23 +20,18 @@ this to your `roles.yml`
 
 ```YAML
 - name: sansible.users_and_groups
-  version: v1.0
+  version: v2.0
 ```
 
 and run `ansible-galaxy install -p ./roles -r roles.yml`
-
-
 
 
 ## Tags
 
 This role uses two tags: **build** and **maintain**
 
-* `build` - Ensures that specified groups and users are
-  present.
-* `maintain` - Ensures users on an already built and configured instance
-
-
+* `build` - Ensures that specified groups and users are present.
+* `maintain` - Ensures users on an already built and configured instance.
 
 
 ## Examples
@@ -64,23 +44,24 @@ Simple example for creating two users and two groups.
 
   roles:
     - name: sansible.users_and_groups
-      users_and_groups:
-        groups:
-          - name: lorem
-            system: yes
-          - name: ipsum
-        users:
-          - name: lorem.ipsum
-            groups:
-              - ipsum
-              - lorem
-            ssh_key: ./lorem.ipsum.pub
-          - name: dolor.ament
-            groups:
-              - ipsum
+      sansible_users_and_groups_groups:
+        - name: lorem
+          system: yes
+        - name: ipsum
+      sansible_users_and_groups_users:
+        - name: lorem.ipsum
+          groups:
+            - ipsum
+            - lorem
+          ssh_key: ./lorem.ipsum.pub
+        - name: dolor.ament
+          groups:
+            - ipsum
 ```
 
-Creating a jailed SFTP user (cf [here](https://wiki.archlinux.org/index.php/SFTP_chroot) for a step-by-step guide):
+Creating a jailed SFTP user
+(cf [here](https://wiki.archlinux.org/index.php/SFTP_chroot) for a
+step-by-step guide):
 
 ```YAML
 - name: Configure User Access
@@ -88,14 +69,13 @@ Creating a jailed SFTP user (cf [here](https://wiki.archlinux.org/index.php/SFTP
 
   roles:
     - name: sansible.users_and_groups
-      users_and_groups:
-        authorized_keys_dir: /etc/ssh/authorized_keys
-        groups:
-          - name: sftp_only
-        users:
-          - name: sftp
-            group: sftp_only
-            home: /mnt/sftp_vol
+      sansible_users_and_groups_authorized_keys_dir: /etc/ssh/authorized_keys
+      sansible_users_and_groups_groups:
+        - name: sftp_only
+      sansible_users_and_groups_users:
+        - name: sftp
+          group: sftp_only
+          home: /mnt/sftp_vol
 ```
 
 In most cases you would keep the list of users in external vars file or
@@ -110,13 +90,11 @@ group|host vars file.
 
   roles:
     - name: sansible.users_and_groups
-      users_and_groups:
-        groups: "{{ base_image.os_groups }}"
-        users: "{{ base_image.admins }}"
+      sansible_users_and_groups_groups: "{{ base_image.os_groups }}"
+      sansible_users_and_groups_users: "{{ base_image.admins }}"
 
     - name: sansible.users_and_groups
-      users_and_groups:
-        users: "{{ developers }}"
+      sansible_users_and_groups_users: "{{ developers }}"
 ```
 
 Add selected group to sudoers
@@ -130,21 +108,18 @@ Add selected group to sudoers
 
   roles:
     - name: sansible.users_and_groups
-      users_and_groups:
-        groups: "{{ base_image.os_groups }}"
-        users: "{{ base_image.admins }}"
+      sansible_users_and_groups_groups: "{{ base_image.os_groups }}"
+      sansible_users_and_groups_users: "{{ base_image.admins }}"
 
     - name: sansible.users_and_groups
-      users_and_groups:
-        users: "{{ developers }}"
+      sansible_users_and_groups_users: "{{ developers }}"
 
     - name: sansible.users_and_groups
-      users_and_groups:
-        sudoers:
-          - name: wheel
-            user: "%wheel"
-            runas: "ALL=(ALL)"
-            commands: "NOPASSWD: ALL"
+      sansible_users_and_groups_sudoers:
+        - name: wheel
+          user: "%wheel"
+          runas: "ALL=(ALL)"
+          commands: "NOPASSWD: ALL"
 ```
 
 Use whitelist groups option to allow users contextually.
@@ -156,18 +131,17 @@ Var file with users:
 
 # vars/users.yml
 
-users_and_groups:
-  groups:
-    - name: admins
-    - name: developer_group_alpha
-    - name: developer_group_beta
-  users:
-    - name: admin.user
-      group: admins
-    - name: alpha.user
-      group: alpha_develops
-    - name: beta.user
-      group: developer_group_beta
+sansible_users_and_groups_groups:
+  - name: admins
+  - name: developer_group_alpha
+  - name: developer_group_beta
+sansible_users_and_groups_users:
+  - name: admin.user
+    group: admins
+  - name: alpha.user
+    group: alpha_develops
+  - name: beta.user
+    group: developer_group_beta
 ```
 
 In a base image:
@@ -185,9 +159,8 @@ In a base image:
 
   roles:
     - role: sansible.users_and_groups
-      users_and_groups:
-        whitelist_groups:
-          - admins
+      sansible_users_and_groups_whitelist_groups:
+        - admins
 
     - role: base_image
 ```
@@ -207,11 +180,9 @@ In a service role:
 
   roles:
     - role: sansible.users_and_groups
-      users_and_groups:
-        whitelist_groups:
-          - admins
-          - developer_group_alpha
+      sansible_users_and_groups_whitelist_groups:
+        - admins
+        - developer_group_alpha
 
     - role: alpha_service
 ```
-

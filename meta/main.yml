@@ -1,16 +1,17 @@
 ---
 
 allow_duplicates: yes
-dependencies: [ ]
+dependencies: []
 
 galaxy_info:
-  author: Wojtek Oledzki
-  description: Users and groups management made simple
+  description: Users and Groups Management Made Simple
   license: MIT
-  min_ansible_version: 1.9
+  min_ansible_version: 2.2
   platforms:
     - name: Ubuntu
       versions:
-        - all
+        - trusty
+        - xenial
+        - bionic
   categories:
     - system
