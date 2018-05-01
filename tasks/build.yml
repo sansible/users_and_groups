@@ -48,7 +48,7 @@
     system: "{{ item.system | default(omit) }}"
     uid: "{{ item.uid | default(omit) }}"
   with_items: "{{ sansible_users_and_groups_users }}"
-  when: (not sansible_users_and_groups_whitelist_groups)
+  when: (sansible_users_and_groups_whitelist_groups == [])
     or ( item.groups is defined and ( item.groups | intersect(sansible_users_and_groups_whitelist_groups )))
     or ( item.group is defined and item.group in sansible_users_and_groups_whitelist_groups)
 
