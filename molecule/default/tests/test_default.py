@@ -7,6 +7,8 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 
 
 def test_groups(host):
+    assert host.group('test_basic').exists
+
     assert host.group('test_one').exists
 
     assert host.group('test_two').exists
@@ -17,6 +19,9 @@ def test_groups(host):
 
 
 def test_users(host):
+    assert host.user('test_basic').exists
+    assert 'test_basic' in host.user('test_basic').groups
+
     assert host.user('john').exists
     assert 'test_one' in host.user('john').groups
     assert 'test_two' in host.user('john').groups
@@ -33,6 +38,10 @@ def test_users(host):
 
 
 def test_sudo(host):
+    with host.sudo('test_basic'):
+        with host.sudo():
+            assert host.check_output('whoami') == 'root'
+
     with host.sudo('john'):
         with host.sudo():
             assert host.check_output('whoami') == 'root'

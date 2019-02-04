@@ -6,7 +6,7 @@ dependencies: []
 galaxy_info:
   description: Users and Groups Management Made Simple
   license: MIT
-  min_ansible_version: 2.2
+  min_ansible_version: 2.5
   platforms:
     - name: Ubuntu
       versions:

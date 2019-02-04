@@ -72,7 +72,7 @@
 - name: Create .ssh directory in default user home directory
   become: yes
   file:
-    path: "{{ item.home | default('/home/' ~ item.name)/}}/.ssh"
+    path: "{{ item.home | default('/home/' ~ item.name) }}/.ssh"
     owner: "{{ item.name }}"
     group: "{{ item.group | default(omit) }}"
     mode: 0700
