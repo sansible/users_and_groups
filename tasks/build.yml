@@ -41,13 +41,14 @@
     group: "{{ item.group | default(omit) }}"
     groups: "{{ item.groups | default([ ]) | join(',') | default(omit) }}"
     name: "{{ item.name }}"
+    non_unique: "{{ item.non_unique | default(no) }}"
     password: "{{ item.password | default(omit) }}"
-    update_password: "{{ item.update_password | default(omit) }}"
     remove: "{{ 'yes' if item.state is defined and item.state == 'absent' else 'no' }}"
     shell: "{{ item.shell | default('/bin/bash') }}"
     state: "{{ item.state | default(omit) }}"
     system: "{{ item.system | default(omit) }}"
     uid: "{{ item.uid | default(omit) }}"
+    update_password: "{{ item.update_password | default(omit) }}"
   with_items: "{{ sansible_users_and_groups_users }}"
   when: (sansible_users_and_groups_whitelist_groups == [])
     or ( item.groups is defined and ( item.groups | intersect(sansible_users_and_groups_whitelist_groups )))
