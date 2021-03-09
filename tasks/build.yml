@@ -79,7 +79,7 @@
     mode: 0700
     state: directory
   with_items: "{{ sansible_users_and_groups_users }}"
-  when: (sansible_users_and_groups_authorized_keys_dir is none)
+  when: (sansible_users_and_groups_authorized_keys_dir is not defined)
     and (item.state is not defined or item.state != "absent")
     and (
       (not sansible_users_and_groups_whitelist_groups)
@@ -94,7 +94,7 @@
     key: "{{ lookup('file', item.ssh_key) }}"
     manage_dir: yes
   with_items: "{{ sansible_users_and_groups_users }}"
-  when: (sansible_users_and_groups_authorized_keys_dir is none)
+  when: (sansible_users_and_groups_authorized_keys_dir is not defined)
     and (item.state is not defined or item.state != "absent")
     and (item.ssh_key is defined)
     and (
@@ -111,7 +111,7 @@
     group: "root"
     mode: 0755
     state: directory
-  when: sansible_users_and_groups_authorized_keys_dir is not none
+  when: sansible_users_and_groups_authorized_keys_dir is defined
 
 - name: Copy ssh auth keys to alternate authorized_keys directory
   become: yes
@@ -121,7 +121,7 @@
     path: "{{ sansible_users_and_groups_authorized_keys_dir ~ '/' ~ item.name }}"
     manage_dir: no
   with_items: "{{ sansible_users_and_groups_users }}"
-  when: (sansible_users_and_groups_authorized_keys_dir is not none)
+  when: (sansible_users_and_groups_authorized_keys_dir is defined)
     and (item.state is not defined or item.state != "absent")
     and (item.ssh_key is defined)
     and (
